@@ -1,7 +1,9 @@
 package com.example.library.Security;
 
+import com.example.library.Common.ApplicationRoles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -18,29 +20,42 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JWTGenerator jwtGenerator;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(JWTGenerator jwtGenerator, CustomUserDetailsService customUserDetailsService) {
+        this.jwtGenerator = jwtGenerator;
+        this.customUserDetailsService = customUserDetailsService;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .exceptionHandling(Customizer.withDefaults())
+                .exceptionHandling(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests( authRequests -> {
+                .authorizeHttpRequests(authRequests -> {
+                    authRequests.requestMatchers("/api/Authentication/**").permitAll();
+                    authRequests.requestMatchers(HttpMethod.GET, "/api/books/**").hasAuthority(ApplicationRoles.View_Books)
+                            .requestMatchers(HttpMethod.POST, "/api/books/**").hasAuthority(ApplicationRoles.Edit_Books)
+                            .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAuthority(ApplicationRoles.Edit_Books)
+                            .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAuthority(ApplicationRoles.Edit_Books);
+                    authRequests.requestMatchers("/api/patrons/**").hasAnyAuthority(ApplicationRoles.Edit_Patrons,ApplicationRoles.View_Patrons);
+                    authRequests.requestMatchers("/api/borrow/**").hasAuthority(ApplicationRoles.Borrow_Book);
+                    authRequests.requestMatchers("/api/return/**").hasAuthority(ApplicationRoles.Return_Book);
                     authRequests.requestMatchers("/**").permitAll();
                 })
-                //.oauth2Login(Customizer.withDefaults())
                 .httpBasic(AbstractHttpConfigurer::disable);
-        http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTAuthenticationFilter(jwtGenerator, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

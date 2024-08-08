@@ -1,7 +1,7 @@
 package com.example.library.Models;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,17 +12,16 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email", "username"})})
-
+@Table
 public class BorrowingRecord {
 
-    public BorrowingRecord(Long id, Book book, Patron patron, Date borrowDate, Date returnDate) {
-        this.id = id;
+    public BorrowingRecord( Book book, Patron patron, Date borrowDate,@Nullable Date returnDate) {
         this.book = book;
         this.patron = patron;
         this.borrowDate=borrowDate;
         this.returnDate=returnDate;
     }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +41,7 @@ public class BorrowingRecord {
 
     @Column(name = "return_date")
     @Temporal(TemporalType.DATE)
+    @Nullable
     private Date returnDate;
 
 

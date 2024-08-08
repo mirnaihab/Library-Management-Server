@@ -2,7 +2,7 @@ package com.example.library.Security;
 
 import com.example.library.Models.Patron;
 import com.example.library.Models.Roles;
-import com.example.library.Repository.PatronRepository;
+import com.example.library.Repository.IPatronRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PatronRepository patronRepository;
+    private final IPatronRepository IPatronRepository;
 
     @Autowired
-    public CustomUserDetailsService(PatronRepository patronRepository) {
-        this.patronRepository = patronRepository;
+    public CustomUserDetailsService(IPatronRepository IPatronRepository) {
+        this.IPatronRepository = IPatronRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String identifier) {
-        Patron user = patronRepository.findByUsernameOrEmail(identifier, identifier);
+        Patron user = IPatronRepository.findByUsernameOrEmail(identifier, identifier);
         return new User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 

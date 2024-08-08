@@ -25,7 +25,6 @@ public class Patron {
         this.phoneNumber = phoneNumber;
         this.country = country;
         this.address = address;
-
     }
 
     @Id
@@ -58,11 +57,14 @@ public class Patron {
     @NotBlank(message = "This Field is Required")
     private String country;
 
+    private boolean admin;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Roles> roles;
+
 
 
 }

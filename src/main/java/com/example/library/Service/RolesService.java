@@ -1,25 +1,22 @@
 package com.example.library.Service;
 
-
 import com.example.library.Common.Enums;
 import com.example.library.DTOs.ResponseDTO;
 import com.example.library.DTOs.RolesDTO.RolesDTO;
-import com.example.library.DTOs.RolesDTO.RolesResponseDTO;
 import com.example.library.Models.Roles;
-import com.example.library.Repository.RolesRepository;
+import com.example.library.Repository.IRolesRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class RolesService {
-    private final RolesRepository rolesRepository;
+    private final IRolesRepository IRolesRepository;
 
-    public RolesService(RolesRepository rolesRepository) {
-        this.rolesRepository = rolesRepository;
+    public RolesService(IRolesRepository IRolesRepository) {
+        this.IRolesRepository = IRolesRepository;
     }
 
 
@@ -30,10 +27,10 @@ public class RolesService {
         }else {
             for (RolesDTO r : rolesDTO) {
 
-                if (!rolesRepository.existsByName(r.getName())) {
+                if (!IRolesRepository.existsByName(r.getName())) {
                     Roles newRole = new Roles();
                     newRole.setName(r.getName());
-                    rolesRepository.save(newRole);
+                    IRolesRepository.save(newRole);
                     savedRoles.add(r.getName());
                 }
             }
@@ -52,28 +49,10 @@ public class RolesService {
                 .map(RolesDTO::getName)
                 .collect(Collectors.toList());
 
-        return rolesRepository.findAllByNameIn(roleNames);
-    }
-
-    public RolesResponseDTO getAllRoles(){
-        List<Roles> roles = rolesRepository.findAll();
-        if(!roles.isEmpty())
-        {
-            return new RolesResponseDTO(roles, Enums.StatusResponse.Success,"Retrieved List of Roles Successfully");
-        }
-        else return new RolesResponseDTO(null, Enums.StatusResponse.Failed,"Failed To Retrieve List of Roles");
+        return IRolesRepository.findAllByNameIn(roleNames);
     }
 
 
-    /*public List<Roles> convertFromStringListToRoleMap(List<String> roles) {
-        List<Roles> rolesList = new ArrayList<>();
-        for (String roleName : roles) {
-            boolean roleExistsResp = rolesRepository.existsByName(roleName);
-            if (!roleExistsResp) {
-                Roles role = new Roles();
-                rolesList.add(role);
-            }
-        }
-        return rolesList;
-    }*/
+
+
 }
