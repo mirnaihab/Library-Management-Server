@@ -41,6 +41,7 @@ public class BooksController {
     @PreAuthorize("hasRole(T(com.example.library.Common.ApplicationRoles).Edit_Books)")
     public ResponseEntity<ResponseDTO> addBook(@RequestBody AddBookDTO addBookDTO)   {
         ResponseDTO response = booksService.addBook(addBookDTO);
+
         if (response.getStatusResponse() == Enums.StatusResponse.Success) {
             return ResponseEntity.ok(response);
         } else {
@@ -72,7 +73,7 @@ public class BooksController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole(T(com.example.library.Common.ApplicationRoles).Edit_Books)")
-    public ResponseEntity<ResponseDTO> addBook(@PathVariable Long id)   {
+    public ResponseEntity<ResponseDTO> deleteBook(@PathVariable Long id)   {
         ResponseDTO response = booksService.deleteBook(id);
         if (response.getStatusResponse() == Enums.StatusResponse.Success) {
             return ResponseEntity.ok(response);

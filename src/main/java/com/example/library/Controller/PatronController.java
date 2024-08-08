@@ -22,16 +22,6 @@ public class PatronController {
         this.patronService = patronService;
     }
 
-//    @GetMapping("")
-//    @PreAuthorize("hasRole(T(com.example.library.Common.ApplicationRoles).View_Patrons)")
-//    public ResponseEntity<AllPatronsResponseDTO> getPatrons()   {
-//        AllPatronsResponseDTO response = patronService.getAllPatrons();
-//        if (response.getStatusResponse() == Enums.StatusResponse.Success) {
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole(T(com.example.library.Common.ApplicationRoles).View_Patrons)")
@@ -66,16 +56,6 @@ public class PatronController {
         }
     }
 
-//    @GetMapping("")
-//    @PreAuthorize("hasRole(T(com.example.library.Common.ApplicationRoles).View_Patrons)")
-//    public ResponseEntity<AllPatronsResponseDTO> getPatrons()   {
-//        AllPatronsResponseDTO response = patronService.getAllPatrons();
-//        if (response.getStatusResponse() == Enums.StatusResponse.Success) {
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole(T(com.example.library.Common.ApplicationRoles).Edit_Patrons)")

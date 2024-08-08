@@ -9,6 +9,7 @@ import java.util.List;
 
 @Setter
 @Getter
+
 public class AllBooksResponseDTO extends ResponseDTO {
 
     public AllBooksResponseDTO(Enums.StatusResponse statusResponse, String message, List<AllBooksDTO> bookList) {

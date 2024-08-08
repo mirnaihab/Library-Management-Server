@@ -51,7 +51,7 @@ public class BooksService {
         Book book = BookMapper.mapToBook(addBookDTO);
         try {
             IBooksRepository.save(book);
-            return new ResponseDTO(Enums.StatusResponse.Success, "Book added successfully");
+            return new ResponseDTO(Enums.StatusResponse.Success, "Book Added Successfully");
         } catch (Exception e) {
             log.error("Failed to add Book: {}", e.getMessage(), e);
             return new ResponseDTO(Enums.StatusResponse.Failed, "Failed to Add Book");
